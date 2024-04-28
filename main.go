@@ -21,10 +21,15 @@ func app() error {
 		return fmt.Errorf("loading configuration: %w", err)
 	}
 
+	fileUploadHandler, err := newFileUploadHandler(config.Destination)
+	if err != nil {
+		return err
+	}
+
 	mux := http.NewServeMux()
 
 	mux.Handle("GET /", viewHandler())
-	mux.Handle("POST /", fileUploadHandler())
+	mux.Handle("POST /", fileUploadHandler)
 
 	fmt.Printf("Listening on %v...\n", config.Address)
 	return http.ListenAndServe(config.Address, mux)

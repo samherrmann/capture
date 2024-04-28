@@ -5,7 +5,8 @@ import (
 )
 
 type Configuration struct {
-	Address string
+	Address     string
+	Destination string
 }
 
 func Load(args []string) (*Configuration, error) {
@@ -18,12 +19,19 @@ func Load(args []string) (*Configuration, error) {
 		"Address that the server listens on",
 	)
 
+	destination := flagSet.String(
+		"destination",
+		".",
+		"Directory in which to store files",
+	)
+
 	err := flagSet.Parse(args[1:])
 	if err != nil {
 		return nil, err
 	}
 
 	return &Configuration{
-		Address: *address,
+		Address:     *address,
+		Destination: *destination,
 	}, nil
 }
