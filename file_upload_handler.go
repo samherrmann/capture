@@ -24,7 +24,8 @@ func newFileUploadHandler(dst string) (http.Handler, error) {
 }
 
 func copyFormFile(r *http.Request, dst string) (int, error) {
-	if err := r.ParseMultipartForm(200 << 20); err != nil {
+	// maxMemory is set to 32 megabytes.
+	if err := r.ParseMultipartForm(32 * 1024 * 1024); err != nil {
 		err := fmt.Errorf("parsing multi-part form: %w", err)
 		return http.StatusBadRequest, err
 	}
