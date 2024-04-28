@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+
+	"github.com/samherrmann/capture/configuration"
 )
 
 func main() {
@@ -14,12 +16,16 @@ func main() {
 }
 
 func app() error {
+	config, err := configuration.Load(os.Args)
+	if err != nil {
+		return fmt.Errorf("loading configuration: %w", err)
+	}
+
 	mux := http.NewServeMux()
 
 	mux.Handle("GET /", viewHandler())
 	mux.Handle("POST /", fileUploadHandler())
 
-	addr := ":8080"
-	fmt.Printf("Listening on %v...\n", addr)
-	return http.ListenAndServe(addr, mux)
+	fmt.Printf("Listening on %v...\n", config.Address)
+	return http.ListenAndServe(config.Address, mux)
 }
