@@ -1,6 +1,8 @@
 package configuration
 
 import (
+	"bytes"
+	"errors"
 	"flag"
 )
 
@@ -12,6 +14,9 @@ type Configuration struct {
 func Load(args []string) (*Configuration, error) {
 
 	flagSet := flag.NewFlagSet(args[0], flag.ContinueOnError)
+
+	errMsg := bytes.NewBufferString("")
+	flagSet.SetOutput(errMsg)
 
 	address := flagSet.String(
 		"address",
@@ -27,7 +32,10 @@ func Load(args []string) (*Configuration, error) {
 
 	err := flagSet.Parse(args[1:])
 	if err != nil {
-		return nil, err
+		if errors.Is(err, flag.ErrHelp) {
+			return nil, &HelpError{usage: errMsg.String()}
+		}
+		return nil, errors.New(errMsg.String())
 	}
 
 	return &Configuration{
