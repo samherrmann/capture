@@ -17,7 +17,7 @@ func main() {
 func app() error {
 	config, err := configuration.Load(os.Args)
 	if err != nil {
-		return fmt.Errorf("loading configuration: %w", err)
+		return err
 	}
 
 	fileUploadHandler, err := newFileUploadHandler(config.Destination)
