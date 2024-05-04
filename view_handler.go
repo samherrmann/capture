@@ -1,36 +1,17 @@
 package main
 
 import (
-	"embed"
 	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
 
 	"github.com/samherrmann/capture/cookies"
-)
-
-//go:embed view.html
-var viewFS embed.FS
-
-type ViewData struct {
-	Status *Status
-}
-
-type Status struct {
-	Level   StatusLevel
-	Message string
-}
-
-type StatusLevel string
-
-const (
-	StatusLevelSuccess StatusLevel = "success"
-	StatusLevelError   StatusLevel = "error"
+	"github.com/samherrmann/capture/view"
 )
 
 func newViewHandler() (http.Handler, error) {
-	tpl, err := template.ParseFS(viewFS, "view.html")
+	tpl, err := view.NewTemplate()
 	if err != nil {
 		return nil, err
 	}
@@ -48,16 +29,14 @@ func newViewHandler() (http.Handler, error) {
 			}
 		}
 
-		statusLevel := StatusLevelError
+		// Get status level based on status code.
+		statusLevel := view.StatusLevelError
 		if status.Code < 400 {
-			statusLevel = StatusLevelSuccess
+			statusLevel = view.StatusLevelSuccess
 		}
 
-		// Ensure cookies are cleared regardless if there was an error or not.
-		cookies.ClearStatus(w)
-
-		viewData := &ViewData{
-			Status: &Status{
+		viewData := &view.Data{
+			Status: &view.Status{
 				Level:   statusLevel,
 				Message: status.Message,
 			},
@@ -68,7 +47,8 @@ func newViewHandler() (http.Handler, error) {
 }
 
 // writeView writes the view to the response w.
-func writeView(w http.ResponseWriter, code int, tpl *template.Template, data *ViewData) {
+func writeView(w http.ResponseWriter, code int, tpl *template.Template, data *view.Data) {
+	cookies.ClearStatus(w)
 	w.WriteHeader(code)
 	if err := tpl.Execute(w, data); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
