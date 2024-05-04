@@ -7,13 +7,40 @@
   <title>Capture</title>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <style>
+    html {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 8px;
+    }
+    body {
+      margin: 0;
+      font-size: 2rem;
+    }
+    form {
+      margin: 2rem;
+    }
     input:invalid + button {
       display: none;
+    }
+    .status {
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+    .status.success {
+      background-color: green;
+    }
+    .status.error {
+      background-color: red;
     }
   </style>
 </head>
 
 <body>
+  {{ if and . .Status }}
+    <div class="status {{ .Status.Level }}">
+      {{ .Status.Message }}
+    </div>
+  {{ end }}
   <form action="/" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept="image/*" capture="environment" required/>
     <button type="submit">Upload</button>

@@ -25,9 +25,14 @@ func app() error {
 		return err
 	}
 
+	viewHandler, err := newViewHandler()
+	if err != nil {
+		return err
+	}
+
 	mux := http.NewServeMux()
 
-	mux.Handle("GET /", viewHandler())
+	mux.Handle("GET /", viewHandler)
 	mux.Handle("POST /", fileUploadHandler)
 
 	fmt.Printf("Listening on %v...\n", config.Address)

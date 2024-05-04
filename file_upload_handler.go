@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/samherrmann/capture/cookies"
 )
 
 func newFileUploadHandler(dst string) (http.Handler, error) {
@@ -14,11 +16,12 @@ func newFileUploadHandler(dst string) (http.Handler, error) {
 		return nil, err
 	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		code, err := copyFormFile(r, dst)
+		statusMsg := "Success!"
+		statusCode, err := copyFormFile(r, dst)
 		if err != nil {
-			http.Error(w, err.Error(), code)
-			return
+			statusMsg = fmt.Sprintf("Error: %s", err.Error())
 		}
+		cookies.SetStatus(w, statusCode, statusMsg)
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}), nil
 }
