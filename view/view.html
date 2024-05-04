@@ -7,6 +7,12 @@
   <title>Capture</title>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <style>
+    @keyframes fade-out {
+      100% {
+        opacity: 0;
+        display: none;
+      }
+    }
     html {
       font-family: Arial, Helvetica, sans-serif;
       font-size: 8px;
@@ -28,6 +34,10 @@
     }
     .status.success {
       background-color: green;
+      animation-name: fade-out;
+      animation-delay: 2s;
+      animation-duration: 2s;
+      animation-fill-mode: forwards;
     }
     .status.error {
       background-color: red;
