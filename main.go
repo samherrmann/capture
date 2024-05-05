@@ -5,7 +5,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/samherrmann/capture/configuration"
+	"github.com/samherrmann/capture/internal"
+	"github.com/samherrmann/capture/internal/configuration"
 )
 
 func main() {
@@ -20,12 +21,12 @@ func app() error {
 		return err
 	}
 
-	fileUploadHandler, err := newFileUploadHandler(config.Destination)
+	fileUploadHandler, err := internal.NewFileUploadHandler(config.Destination)
 	if err != nil {
 		return err
 	}
 
-	viewHandler, err := newViewHandler()
+	viewHandler, err := internal.NewViewHandler()
 	if err != nil {
 		return err
 	}

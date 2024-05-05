@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"errors"
@@ -6,11 +6,11 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/samherrmann/capture/cookies"
-	"github.com/samherrmann/capture/view"
+	"github.com/samherrmann/capture/internal/cookies"
+	"github.com/samherrmann/capture/internal/view"
 )
 
-func newViewHandler() (http.Handler, error) {
+func NewViewHandler() (http.Handler, error) {
 	tpl, err := view.NewTemplate()
 	if err != nil {
 		return nil, err

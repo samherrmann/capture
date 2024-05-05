@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"fmt"
@@ -8,10 +8,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/samherrmann/capture/cookies"
+	"github.com/samherrmann/capture/internal/cookies"
 )
 
-func newFileUploadHandler(dst string) (http.Handler, error) {
+func NewFileUploadHandler(dst string) (http.Handler, error) {
 	if err := os.MkdirAll(dst, os.ModePerm); err != nil {
 		err := fmt.Errorf("making destination directory: %w", err)
 		return nil, err
