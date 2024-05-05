@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/samherrmann/capture/cookies"
 )
@@ -33,6 +34,7 @@ func copyFormFile(r *http.Request, dst string) (int, error) {
 		return http.StatusBadRequest, err
 	}
 
+	// Get file from form.
 	srcFile, handler, err := r.FormFile("file")
 	if err != nil {
 		err := fmt.Errorf("reading form file: %w", err)
@@ -40,13 +42,19 @@ func copyFormFile(r *http.Request, dst string) (int, error) {
 	}
 	defer srcFile.Close()
 
-	dstFile, err := os.Create(filepath.Join(dst, handler.Filename))
+	// Create a filename based on the current Unix time.
+	ext := filepath.Ext(handler.Filename)
+	filename := fmt.Sprintf("%v%s", time.Now().UnixNano(), ext)
+
+	// Create file on disk.
+	dstFile, err := os.Create(filepath.Join(dst, filename))
 	if err != nil {
 		err := fmt.Errorf("creating destination file: %w", err)
 		return http.StatusInternalServerError, err
 	}
 	defer dstFile.Close()
 
+	// Copy form file into disk file.
 	_, err = io.Copy(dstFile, srcFile)
 	if err != nil {
 		err := fmt.Errorf("copying source file to destination file: %w", err)
