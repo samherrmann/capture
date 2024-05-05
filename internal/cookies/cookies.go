@@ -1,3 +1,4 @@
+// Package cookies provides functions to manage HTTP cookies.
 package cookies
 
 import (

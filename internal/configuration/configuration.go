@@ -1,3 +1,5 @@
+// Package configuration provides application configuration through command-line
+// flags.
 package configuration
 
 import (

@@ -1,3 +1,4 @@
+// Package view is responsible for generating the user interface.
 package view
 
 import (
