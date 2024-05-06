@@ -12,10 +12,6 @@ import (
 )
 
 func NewFileUploadHandler(dst string) (http.Handler, error) {
-	if err := os.MkdirAll(dst, os.ModePerm); err != nil {
-		err := fmt.Errorf("making destination directory: %w", err)
-		return nil, err
-	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		statusMsg := "Success!"
 		statusCode, err := copyFormFile(r, dst)
@@ -45,6 +41,12 @@ func copyFormFile(r *http.Request, dst string) (int, error) {
 	// Create a filename based on the current Unix time.
 	ext := filepath.Ext(handler.Filename)
 	filename := fmt.Sprintf("%v%s", time.Now().UnixNano(), ext)
+
+	// Ensure destination directory exists.
+	if err := os.MkdirAll(dst, os.ModePerm); err != nil {
+		err := fmt.Errorf("creating destination directory: %w", err)
+		return http.StatusInternalServerError, err
+	}
 
 	// Create file on disk.
 	dstFile, err := os.Create(filepath.Join(dst, filename))
