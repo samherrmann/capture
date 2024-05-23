@@ -1,6 +1,10 @@
 
 name: Go
 
+# Reference: https://github.com/softprops/action-gh-release/issues/236
+permissions:
+  contents: write
+
 on:
   push:
   pull_request:
